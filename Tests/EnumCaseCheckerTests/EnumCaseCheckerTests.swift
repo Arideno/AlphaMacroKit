@@ -122,4 +122,32 @@ final class EnumCaseCheckerTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testReservedKeyword() throws {
+        #if canImport(EnumCaseCheckerMacros)
+        assertMacroExpansion(
+            """
+            @EnumCaseChecker
+            enum State {
+                case `continue`
+            }
+            """,
+            expandedSource: """
+            enum State {
+                case `continue`
+
+                var isContinue: Bool {
+                    guard case .continue = self else {
+                        return false
+                    }
+                    return true
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 }

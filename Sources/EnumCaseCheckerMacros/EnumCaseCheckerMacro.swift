@@ -17,8 +17,9 @@ public struct EnumCaseCheckerMacro: MemberMacro {
         var computedProperties = [VariableDeclSyntax]()
 
         for element in elements {
-            let computedProperty = try VariableDeclSyntax("var is\(raw: element.name.text.capitalizingFirstLetter()): Bool") {
-                try GuardStmtSyntax("guard case .\(element.name) = self else") {
+            let elementName = element.name.text.replacingOccurrences(of: "`", with: "")
+            let computedProperty = try VariableDeclSyntax("var is\(raw: elementName.capitalizingFirstLetter()): Bool") {
+                try GuardStmtSyntax("guard case .\(raw: elementName) = self else") {
                     "return false"
                 }
 
