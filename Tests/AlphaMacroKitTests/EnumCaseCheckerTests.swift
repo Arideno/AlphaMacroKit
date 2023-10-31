@@ -1,19 +1,14 @@
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
-
-// Macro implementations build for the host, so the corresponding module is not available when cross-compiling. Cross-compiled tests may still make use of the macro itself in end-to-end tests.
-#if canImport(EnumCaseCheckerMacros)
-import EnumCaseCheckerMacros
-
-let testMacros: [String: Macro.Type] = [
-    "EnumCaseChecker": EnumCaseCheckerMacro.self,
-]
-#endif
+import AlphaMacroKitMacros
 
 final class EnumCaseCheckerTests: XCTestCase {
+    let testMacros: [String: Macro.Type] = [
+        "EnumCaseChecker": EnumCaseCheckerMacro.self,
+    ]
+
     func testMacro() throws {
-        #if canImport(EnumCaseCheckerMacros)
         assertMacroExpansion(
             """
             @EnumCaseChecker
@@ -53,13 +48,9 @@ final class EnumCaseCheckerTests: XCTestCase {
             """,
             macros: testMacros
         )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
     }
 
     func testMacroCamelCaseNames() throws {
-        #if canImport(EnumCaseCheckerMacros)
         assertMacroExpansion(
             """
             @EnumCaseChecker
@@ -99,13 +90,9 @@ final class EnumCaseCheckerTests: XCTestCase {
             """,
             macros: testMacros
         )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
     }
 
     func testMacroNotOnEnum() throws {
-        #if canImport(EnumCaseCheckerMacros)
         assertMacroExpansion(
             """
             @EnumCaseChecker
@@ -118,13 +105,9 @@ final class EnumCaseCheckerTests: XCTestCase {
             diagnostics: [.init(message: "'EnumCaseChecker' macro can only be applied to an enum", line: 1, column: 1)],
             macros: testMacros
         )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
     }
 
     func testReservedKeyword() throws {
-        #if canImport(EnumCaseCheckerMacros)
         assertMacroExpansion(
             """
             @EnumCaseChecker
@@ -146,8 +129,5 @@ final class EnumCaseCheckerTests: XCTestCase {
             """,
             macros: testMacros
         )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
     }
 }

@@ -5,17 +5,17 @@ import PackageDescription
 import CompilerPluginSupport
 
 let package = Package(
-    name: "EnumCaseChecker",
+    name: "AlphaMacroKit",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "EnumCaseChecker",
-            targets: ["EnumCaseChecker"]
+            name: "AlphaMacroKit",
+            targets: ["AlphaMacroKit"]
         ),
         .executable(
-            name: "EnumCaseCheckerClient",
-            targets: ["EnumCaseCheckerClient"]
+            name: "AlphaMacroKitClient",
+            targets: ["AlphaMacroKitClient"]
         ),
     ],
     dependencies: [
@@ -27,7 +27,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         // Macro implementation that performs the source transformation of a macro.
         .macro(
-            name: "EnumCaseCheckerMacros",
+            name: "AlphaMacroKitMacros",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
@@ -35,16 +35,16 @@ let package = Package(
         ),
 
         // Library that exposes a macro as part of its API, which is used in client programs.
-        .target(name: "EnumCaseChecker", dependencies: ["EnumCaseCheckerMacros"]),
+        .target(name: "AlphaMacroKit", dependencies: ["AlphaMacroKitMacros"]),
 
         // A client of the library, which is able to use the macro in its own code.
-        .executableTarget(name: "EnumCaseCheckerClient", dependencies: ["EnumCaseChecker"]),
+        .executableTarget(name: "AlphaMacroKitClient", dependencies: ["AlphaMacroKit"]),
 
         // A test target used to develop the macro implementation.
         .testTarget(
-            name: "EnumCaseCheckerTests",
+            name: "AlphaMacroKitTests",
             dependencies: [
-                "EnumCaseCheckerMacros",
+                "AlphaMacroKitMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
