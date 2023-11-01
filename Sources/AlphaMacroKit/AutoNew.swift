@@ -8,7 +8,7 @@
 import Foundation
 import CoreGraphics
 
-@attached(extension, conformances: AutoNew, names: named(new))
+@attached(member, names: named(new))
 public macro AutoNew() = #externalMacro(module: "AlphaMacroKitMacros", type: "AutoNewMacro")
 
 public protocol AutoNew {
@@ -43,6 +43,9 @@ extension Float: AutoNew {
     static public func new() -> Float { .init() }
 }
 extension Optional where Wrapped: AutoNew {
-    static func new() -> Wrapped? { Wrapped.new() }
+    static public func new() -> Wrapped? { nil }
+}
+extension Array: AutoNew {
+    static public func new() -> [Element] { [] }
 }
 

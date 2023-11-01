@@ -40,12 +40,11 @@ final class AutoNewTests: XCTestCase {
                 var fullName: String {
                     "\(firstName) \(lastName)"
                 }
-            }
 
-            extension User : AutoNew {
                 static func new(id: UUID = .new(), firstName: String = .new(), lastName: String = .new(), birthDate: Date? = .new()) -> User  {
                     .init(id: id, firstName: firstName, lastName: lastName, birthDate: birthDate)
                 }
+
                 static func new() -> User  {
                     .new(id: .new(), firstName: .new(), lastName: .new(), birthDate: .new())
                 }
