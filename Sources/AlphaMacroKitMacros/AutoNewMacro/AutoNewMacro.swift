@@ -59,6 +59,10 @@ public struct AutoNewMacro: MemberMacro {
 
     private static func getType(for type: TypeSyntax) -> TokenSyntax? {
         if let identifierSyntax = type.as(IdentifierTypeSyntax.self) {
+            if let genericArgumentClause = identifierSyntax.genericArgumentClause {
+                return TokenSyntax(stringLiteral: "\(identifierSyntax.name)<\(genericArgumentClause.arguments.map({ "\($0.argument)" }).joined(separator: ","))>")
+            }
+
             return identifierSyntax.name
         }
 
