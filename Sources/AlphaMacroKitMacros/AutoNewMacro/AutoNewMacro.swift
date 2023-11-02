@@ -5,52 +5,52 @@
 //  Created by Andrii Moisol on 31.10.2023.
 //
 
-import SwiftCompilerPlugin
 import SwiftSyntax
-import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
+import MacroToolkit
 
 public struct AutoNewMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
-        if let structDeclaration = declaration.as(StructDeclSyntax.self) {
-            let members = structDeclaration.memberBlock.members
+        if let struct_ = Struct(declaration) {
+            let members = struct_.members
             let storedPropertiesDecls = members
-                .compactMap { $0.decl.as(VariableDeclSyntax.self) }
-                .filter { !$0.bindings.contains(where: { $0.accessorBlock != nil }) }
-            let storedPropertiesTypes = storedPropertiesDecls
-                    .flatMap(\.bindings)
-                    .map {
-                        return ($0.pattern.cast(IdentifierPatternSyntax.self).identifier.text.replacingOccurrences(of: "`", with: ""), getType(for: $0.typeAnnotation!.type)!.text)
-                    }
+                .compactMap { $0.asVariable }
+                .filter { $0.isStoredProperty }
 
-            let decls = [
+            let storedProperties = storedPropertiesDecls
+                .map { $0.bindings }
+                .flatMap {
+                    let identifiers = $0.compactMap(\.identifier)
+                    let types = $0.compactMap(\.type)
+                    return Array(zip(identifiers, types))
+                }
+
+            return [
                 DeclSyntax(
-                    try FunctionDeclSyntax("static func new(\(raw: storedPropertiesTypes.map({ "\($0.0): \($0.1) = .new()" }).joined(separator: ", "))) -> \(structDeclaration.name)") {
-                        ".init(\(raw: storedPropertiesTypes.map({ "\($0.0): \($0.0)" }).joined(separator: ", ")))"
+                    try FunctionDeclSyntax("static func new(\(raw: storedProperties.map({ "\($0.0): \($0.1.description) = .new()" }).joined(separator: ", "))) -> Self") {
+                        ".init(\(raw: storedProperties.map({ "\($0.0): \($0.0)" }).joined(separator: ", ")))"
                     }
                 ),
                 DeclSyntax(
-                    try FunctionDeclSyntax("static func new() -> \(structDeclaration.name)") {
-                        ".new(\(raw: storedPropertiesTypes.map({ "\($0.0): .new()" }).joined(separator: ", ")))"
+                    try FunctionDeclSyntax("static func new() -> Self") {
+                        ".new(\(raw: storedProperties.map({ "\($0.0): .new()" }).joined(separator: ", ")))"
                     }
                 )
             ]
+        } else if let enum_ = Enum(declaration) {
+            let firstCase = enum_.cases.first!
 
-            return decls
-        } else if let enumDeclaration = declaration.as(EnumDeclSyntax.self) {
-            let members = enumDeclaration.memberBlock.members
-            let caseDecls = members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
-            let firstElement = caseDecls.flatMap(\.elements).first!
-
-            let decl = try FunctionDeclSyntax("static func new() -> \(enumDeclaration.name)") {
-                if let parameters = firstElement.parameterClause?.parameters, !parameters.isEmpty {
-                    ".\(firstElement.name)(\(raw: parameters.map({ $0.firstName != nil ? "\($0.firstName!.text.replacingOccurrences(of: "`", with: "")): .new()" : ".new()" }).joined(separator: ", ")))"
-                } else {
-                    ".\(firstElement.name)"
-                }
-            }
-
-            return [DeclSyntax(decl)]
+            return [
+                DeclSyntax(
+                    try FunctionDeclSyntax("static func new() -> Self") {
+                        if let parameters = firstCase._syntax.parameterClause?.parameters, !parameters.isEmpty {
+                            ".\(raw: firstCase.identifier)(\(raw: parameters.map({ $0.firstName != nil ? "\($0.firstName!.text.replacingOccurrences(of: "`", with: "")): .new()" : ".new()" }).joined(separator: ", ")))"
+                        } else {
+                            ".\(raw: firstCase.identifier)"
+                        }
+                    }
+                )
+            ]
         }
 
         context.diagnose(AutoNewMacroDiagnostic.requiresStructOrEnum.diagnose(at: declaration))
