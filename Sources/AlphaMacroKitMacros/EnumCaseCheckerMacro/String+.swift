@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  String+.swift
 //  
 //
 //  Created by Andrii Moisol on 12.10.2023.

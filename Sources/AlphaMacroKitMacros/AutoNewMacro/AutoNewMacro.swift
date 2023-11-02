@@ -30,15 +30,19 @@ public struct AutoNewMacro: MemberMacro {
                     try FunctionDeclSyntax("static func new(\(raw: storedProperties.map({ "\($0.0): \($0.1.description) = .new()" }).joined(separator: ", "))) -> Self") {
                         ".init(\(raw: storedProperties.map({ "\($0.0): \($0.0)" }).joined(separator: ", ")))"
                     }
-                ),
-                DeclSyntax(
-                    try FunctionDeclSyntax("static func new() -> Self") {
-                        ".new(\(raw: storedProperties.map({ "\($0.0): .new()" }).joined(separator: ", ")))"
-                    }
                 )
             ]
         } else if let enum_ = Enum(declaration) {
-            let firstCase = enum_.cases.first!
+            guard let firstCase = enum_.cases.first else {
+                context.diagnose(
+                    DiagnosticBuilder(for: declaration)
+                        .message("Enum should contain at least one case")
+                        .messageID(domain: "AutoNewMacro", id: "NoEnumCase")
+                        .severity(.error)
+                        .build()
+                )
+                return []
+            }
 
             return [
                 DeclSyntax(
@@ -53,27 +57,13 @@ public struct AutoNewMacro: MemberMacro {
             ]
         }
 
-        context.diagnose(AutoNewMacroDiagnostic.requiresStructOrEnum.diagnose(at: declaration))
+        context.diagnose(
+            DiagnosticBuilder(for: declaration)
+                .message("'AutoNew' macro can only be applied to a struct or enum")
+                .messageID(domain: "AutoNewMacro", id: "WrongUsage")
+                .severity(.error)
+                .build()
+        )
         return []
-    }
-
-    private static func getType(for type: TypeSyntax) -> TokenSyntax? {
-        if let identifierSyntax = type.as(IdentifierTypeSyntax.self) {
-            if let genericArgumentClause = identifierSyntax.genericArgumentClause {
-                return TokenSyntax(stringLiteral: "\(identifierSyntax.name)<\(genericArgumentClause.arguments.map({ "\($0.argument)" }).joined(separator: ","))>")
-            }
-
-            return identifierSyntax.name
-        }
-
-        if let optionalSyntax = type.as(OptionalTypeSyntax.self) {
-            return TokenSyntax(stringLiteral: "\(getType(for: optionalSyntax.wrappedType)!)?")
-        }
-
-        if let arraySyntax = type.as(ArrayTypeSyntax.self) {
-            return TokenSyntax(stringLiteral: "[\(getType(for: arraySyntax.element)!)]")
-        }
-
-        return nil
     }
 }

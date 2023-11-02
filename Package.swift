@@ -12,16 +12,13 @@ let package = Package(
         .library(
             name: "AlphaMacroKit",
             targets: ["AlphaMacroKit"]
-        ),
-        .executable(
-            name: "AlphaMacroKitClient",
-            targets: ["AlphaMacroKitClient"]
-        ),
+        )
     ],
     dependencies: [
         // Depend on the Swift 5.9 release of SwiftSyntax
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
-        .package(url: "https://github.com/stackotter/swift-macro-toolkit", from: "0.3.1")
+        .package(url: "https://github.com/stackotter/swift-macro-toolkit", from: "0.3.1"),
+        .package(url: "https://github.com/pointfreeco/swift-macro-testing", from: "0.2.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -47,7 +44,7 @@ let package = Package(
             name: "AlphaMacroKitTests",
             dependencies: [
                 "AlphaMacroKitMacros",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                .product(name: "MacroTesting", package: "swift-macro-testing")
             ]
         ),
     ]

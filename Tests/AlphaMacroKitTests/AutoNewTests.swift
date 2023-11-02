@@ -6,9 +6,9 @@
 //
 
 import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
 import XCTest
 import AlphaMacroKitMacros
+import MacroTesting
 
 final class AutoNewTests: XCTestCase {
     let testMacros: [String: Macro.Type] = [
@@ -16,7 +16,7 @@ final class AutoNewTests: XCTestCase {
     ]
 
     func testMacro() throws {
-        assertMacroExpansion(
+        assertMacro(testMacros) {
             #"""
             @AutoNew
             struct User {
@@ -29,8 +29,9 @@ final class AutoNewTests: XCTestCase {
                     "\(firstName) \(lastName)"
                 }
             }
-            """#,
-            expandedSource: #"""
+            """#
+        } expansion: {
+            #"""
             struct User {
                 let id: UUID
                 let firstName: String
@@ -41,17 +42,12 @@ final class AutoNewTests: XCTestCase {
                     "\(firstName) \(lastName)"
                 }
 
-                static func new(id: UUID = .new(), firstName: String = .new(), lastName: String = .new(), birthDate: Date? = .new()) -> User  {
+                static func new(id: UUID = .new(), firstName: String = .new(), lastName: String = .new(), birthDate: Date? = .new()) -> Self {
                     .init(id: id, firstName: firstName, lastName: lastName, birthDate: birthDate)
                 }
-
-                static func new() -> User  {
-                    .new(id: .new(), firstName: .new(), lastName: .new(), birthDate: .new())
-                }
             }
-            """#,
-            macros: testMacros
-        )
+            """#
+        }
     }
 }
 

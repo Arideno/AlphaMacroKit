@@ -1,7 +1,14 @@
+//
+//  EnumCaseCheckerTests.swift
+//
+//
+//  Created by Andrii Moisol on 31.10.2023.
+//
+
 import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
 import XCTest
 import AlphaMacroKitMacros
+import MacroTesting
 
 final class EnumCaseCheckerTests: XCTestCase {
     let testMacros: [String: Macro.Type] = [
@@ -9,7 +16,7 @@ final class EnumCaseCheckerTests: XCTestCase {
     ]
 
     func testMacro() throws {
-        assertMacroExpansion(
+        assertMacro(testMacros) {
             """
             @EnumCaseChecker
             enum State {
@@ -17,8 +24,9 @@ final class EnumCaseCheckerTests: XCTestCase {
                 case data
                 case loading
             }
-            """,
-            expandedSource: """
+            """
+        } expansion: {
+            """
             enum State {
                 case error(Int)
                 case data
@@ -45,13 +53,12 @@ final class EnumCaseCheckerTests: XCTestCase {
                     return true
                 }
             }
-            """,
-            macros: testMacros
-        )
+            """
+        }
     }
 
     func testMacroCamelCaseNames() throws {
-        assertMacroExpansion(
+        assertMacro(testMacros) {
             """
             @EnumCaseChecker
             enum State {
@@ -59,8 +66,9 @@ final class EnumCaseCheckerTests: XCTestCase {
                 case data
                 case loadingScreen
             }
-            """,
-            expandedSource: """
+            """
+        } expansion: {
+            """
             enum State {
                 case error(Int)
                 case data
@@ -87,35 +95,35 @@ final class EnumCaseCheckerTests: XCTestCase {
                     return true
                 }
             }
-            """,
-            macros: testMacros
-        )
+            """
+        }
     }
 
     func testMacroNotOnEnum() throws {
-        assertMacroExpansion(
+        assertMacro(testMacros) {
             """
             @EnumCaseChecker
             class State {}
-            """,
-            expandedSource:
             """
+        } diagnostics: {
+            """
+            @EnumCaseChecker
+            ╰─ 🛑 'EnumCaseChecker' macro can only be applied to an enum
             class State {}
-            """,
-            diagnostics: [.init(message: "'EnumCaseChecker' macro can only be applied to an enum", line: 1, column: 1)],
-            macros: testMacros
-        )
+            """
+        }
     }
 
     func testReservedKeyword() throws {
-        assertMacroExpansion(
+        assertMacro(testMacros) {
             """
             @EnumCaseChecker
             enum State {
                 case `continue`
             }
-            """,
-            expandedSource: """
+            """
+        } expansion: {
+            """
             enum State {
                 case `continue`
 
@@ -126,8 +134,7 @@ final class EnumCaseCheckerTests: XCTestCase {
                     return true
                 }
             }
-            """,
-            macros: testMacros
-        )
+            """
+        }
     }
 }
