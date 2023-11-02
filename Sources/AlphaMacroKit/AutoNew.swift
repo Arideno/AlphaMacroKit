@@ -16,36 +16,56 @@ public protocol AutoNew {
 }
 
 extension Int: AutoNew { 
-    static public func new() -> Int { .init() }
+    public static func new() -> Int { .init() }
 }
 extension String: AutoNew {
-    static public func new() -> String { .init() }
+    public static func new() -> String { .init() }
 }
 extension Date: AutoNew {
-    static public func new() -> Date { .init() }
+    public static func new() -> Date { .init() }
 }
 extension UUID: AutoNew {
-    static public func new() -> UUID { .init() }
+    public static func new() -> UUID { .init() }
 }
 extension Data: AutoNew {
-    static public func new() -> Data { .init() }
+    public static func new() -> Data { .init() }
+}
+extension Bool: AutoNew {
+    public static func new() -> Bool { false }
 }
 extension CGPoint: AutoNew {
-    static public func new() -> CGPoint { .init() }
+    public static func new() -> CGPoint { .init() }
 }
 extension CGRect: AutoNew {
-    static public func new() -> CGRect { .init() }
+    public static func new() -> CGRect { .init() }
 }
 extension Double: AutoNew {
-    static public func new() -> Double { .init() }
+    public static func new() -> Double { .init() }
 }
 extension Float: AutoNew {
-    static public func new() -> Float { .init() }
+    public static func new() -> Float { .init() }
 }
 extension Optional where Wrapped: AutoNew {
-    static public func new() -> Wrapped? { nil }
+    public static func new() -> Wrapped? { nil }
 }
 extension Array: AutoNew {
-    static public func new() -> [Element] { [] }
+    public static func new() -> [Element] { [] }
 }
-
+extension URL: AutoNew {
+    public static func new() -> URL { URL(string: "https://google.com")! }
+}
+extension Set: AutoNew {
+    public static func new() -> Set<Element> { .init() }
+}
+extension Dictionary: AutoNew {
+    public static func new() -> Dictionary { [:] }
+}
+extension NSAttributedString {
+    public static func new() -> NSAttributedString { .init() }
+}
+extension Int64: AutoNew {
+    public static func new() -> Int64 { .init() }
+}
+extension UInt: AutoNew {
+    public static func new() -> UInt { .init() }
+}
