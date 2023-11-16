@@ -1,23 +1,22 @@
-//
-//  AutoNewMacro.swift
-//
-//
-//  Created by Andrii Moisol on 31.10.2023.
-//
-
+import MacroToolkit
 import SwiftSyntax
 import SwiftSyntaxMacros
-import MacroToolkit
 
 public struct AutoNewMacro: MemberMacro {
-    public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
         if let struct_ = Struct(declaration) {
             let members = struct_.members
-            let storedPropertiesDecls = members
+            let storedPropertiesDecls =
+                members
                 .compactMap { $0.asVariable }
                 .filter { $0.isStoredProperty }
 
-            let storedProperties = storedPropertiesDecls
+            let storedProperties =
+                storedPropertiesDecls
                 .map { $0.bindings }
                 .flatMap {
                     let identifiers = $0.compactMap(\.identifier)
@@ -27,12 +26,15 @@ public struct AutoNewMacro: MemberMacro {
 
             return [
                 DeclSyntax(
-                    try FunctionDeclSyntax("static func new(\(raw: storedProperties.map({ "\($0.0): \($0.1.description) = .new()" }).joined(separator: ", "))) -> Self") {
+                    try FunctionDeclSyntax(
+                        "static func new(\(raw: storedProperties.map({ "\($0.0): \($0.1.description) = .new()" }).joined(separator: ", "))) -> Self"
+                    ) {
                         ".init(\(raw: storedProperties.map({ "\($0.0): \($0.0)" }).joined(separator: ", ")))"
                     }
                 )
             ]
-        } else if let enum_ = Enum(declaration) {
+        }
+        else if let enum_ = Enum(declaration) {
             guard let firstCase = enum_.cases.first else {
                 context.diagnose(
                     DiagnosticBuilder(for: declaration)
@@ -47,9 +49,12 @@ public struct AutoNewMacro: MemberMacro {
             return [
                 DeclSyntax(
                     try FunctionDeclSyntax("static func new() -> Self") {
-                        if let parameters = firstCase._syntax.parameterClause?.parameters, !parameters.isEmpty {
+                        if let parameters = firstCase._syntax.parameterClause?.parameters,
+                            !parameters.isEmpty
+                        {
                             ".\(raw: firstCase.identifier)(\(raw: parameters.map({ $0.firstName != nil ? "\($0.firstName!.text.replacingOccurrences(of: "`", with: "")): .new()" : ".new()" }).joined(separator: ", ")))"
-                        } else {
+                        }
+                        else {
                             ".\(raw: firstCase.identifier)"
                         }
                     }

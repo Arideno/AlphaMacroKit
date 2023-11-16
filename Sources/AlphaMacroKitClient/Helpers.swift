@@ -1,10 +1,3 @@
-//
-//  Helpers.swift
-//
-//
-//  Created by Andrii Moisol on 02.11.2023.
-//
-
 import Foundation
 
 extension Int {
@@ -51,9 +44,6 @@ extension Set {
 }
 extension Dictionary {
     static func new() -> Dictionary { [:] }
-}
-extension NSAttributedString {
-    static func new() -> NSAttributedString { .init() }
 }
 extension Int64 {
     static func new() -> Int64 { .init() }

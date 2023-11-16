@@ -1,22 +1,17 @@
-//
-//  EnumCaseCheckerTests.swift
-//
-//
-//  Created by Andrii Moisol on 31.10.2023.
-//
-
-import SwiftSyntaxMacros
-import XCTest
 import AlphaMacroKitMacros
 import MacroTesting
+import SwiftSyntaxMacros
+import XCTest
 
 final class EnumCaseCheckerTests: XCTestCase {
-    let testMacros: [String: Macro.Type] = [
-        "EnumCaseChecker": EnumCaseCheckerMacro.self,
-    ]
+    override func invokeTest() {
+        withMacroTesting(macros: [EnumCaseCheckerMacro.self]) {
+            super.invokeTest()
+        }
+    }
 
     func testMacro() throws {
-        assertMacro(testMacros) {
+        assertMacro {
             """
             @EnumCaseChecker
             enum State {
@@ -58,7 +53,7 @@ final class EnumCaseCheckerTests: XCTestCase {
     }
 
     func testMacroCamelCaseNames() throws {
-        assertMacro(testMacros) {
+        assertMacro {
             """
             @EnumCaseChecker
             enum State {
@@ -100,7 +95,7 @@ final class EnumCaseCheckerTests: XCTestCase {
     }
 
     func testMacroNotOnEnum() throws {
-        assertMacro(testMacros) {
+        assertMacro {
             """
             @EnumCaseChecker
             class State {}
@@ -115,7 +110,7 @@ final class EnumCaseCheckerTests: XCTestCase {
     }
 
     func testReservedKeyword() throws {
-        assertMacro(testMacros) {
+        assertMacro {
             """
             @EnumCaseChecker
             enum State {

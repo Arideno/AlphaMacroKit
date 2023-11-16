@@ -1,7 +1,7 @@
 // swift-tools-version: 5.9
 
-import PackageDescription
 import CompilerPluginSupport
+import PackageDescription
 
 let package = Package(
     name: "AlphaMacroKit",
@@ -23,20 +23,17 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-                .product(name: "MacroToolkit", package: "swift-macro-toolkit")
+                .product(name: "MacroToolkit", package: "swift-macro-toolkit"),
             ]
         ),
-
         .target(name: "AlphaMacroKit", dependencies: ["AlphaMacroKitMacros"]),
-
-        .executableTarget(name: "AlphaMacroKitClient", dependencies: ["AlphaMacroKit"]),
-
         .testTarget(
             name: "AlphaMacroKitTests",
             dependencies: [
                 "AlphaMacroKitMacros",
-                .product(name: "MacroTesting", package: "swift-macro-testing")
+                .product(name: "MacroTesting", package: "swift-macro-testing"),
             ]
         ),
+        .executableTarget(name: "AlphaMacroKitClient", dependencies: ["AlphaMacroKit"]),
     ]
 )
