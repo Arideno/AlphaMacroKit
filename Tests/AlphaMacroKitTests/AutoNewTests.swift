@@ -1,22 +1,17 @@
-//
-//  AutoNewTests.swift
-//
-//
-//  Created by Andrii Moisol on 31.10.2023.
-//
-
-import SwiftSyntaxMacros
-import XCTest
 import AlphaMacroKitMacros
 import MacroTesting
+import SwiftSyntaxMacros
+import XCTest
 
 final class AutoNewTests: XCTestCase {
-    let testMacros: [String: Macro.Type] = [
-        "AutoNew": AutoNewMacro.self,
-    ]
+    override func invokeTest() {
+        withMacroTesting(macros: [AutoNewMacro.self]) {
+            super.invokeTest()
+        }
+    }
 
     func testMacro() throws {
-        assertMacro(testMacros) {
+        assertMacro {
             #"""
             @AutoNew
             struct User {
@@ -50,4 +45,3 @@ final class AutoNewTests: XCTestCase {
         }
     }
 }
-

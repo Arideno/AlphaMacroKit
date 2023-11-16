@@ -1,16 +1,13 @@
-//
-//  EnumCaseCheckerMacro.swift
-//
-//
-//  Created by Andrii Moisol on 31.10.2023.
-//
-
+import MacroToolkit
 import SwiftSyntax
 import SwiftSyntaxMacros
-import MacroToolkit
 
 public struct EnumCaseCheckerMacro: MemberMacro {
-    public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
         guard let enum_ = Enum(declaration) else {
             context.diagnose(
                 DiagnosticBuilder(for: declaration)
@@ -28,7 +25,9 @@ public struct EnumCaseCheckerMacro: MemberMacro {
 
         for `case` in cases {
             let caseName = `case`.identifier.replacingOccurrences(of: "`", with: "")
-            let computedProperty = try VariableDeclSyntax("var is\(raw: caseName.capitalizingFirstLetter()): Bool") {
+            let computedProperty = try VariableDeclSyntax(
+                "var is\(raw: caseName.capitalizingFirstLetter()): Bool"
+            ) {
                 try GuardStmtSyntax("guard case .\(raw: caseName) = self else") {
                     "return false"
                 }
