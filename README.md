@@ -6,7 +6,7 @@
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-AlphaMacroKit is crafted to enhance Swift development by providing useful Swift macros. For now this library introduces `AutoNew` and `EnumCaseChecker` macros to solve specific challenges in unit testing area.
+`AlphaMacroKit` is crafted to enhance Swift development by providing useful Swift macros. For now this library introduces `AutoNew` and `EnumCaseChecker` macros to solve specific challenges in unit testing area.
 
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -44,7 +44,7 @@ dependencies: [
 
 ## Usage
 
-The AutoNew macro dramatically simplifies the creation of instances, especially for structs and enums with multiple non-optional properties. It generates a new method, providing default values and reducing boilerplate code. This is useful in unit testing as you usually need to create some stub structs for tests. For example:
+The `AutoNew` macro dramatically simplifies the creation of instances, especially for structs and enums with multiple non-optional properties. It generates a new method, providing default values and reducing boilerplate code. This is useful in unit testing as you usually need to create some stub structs for tests. For example:
 
 ```swift
 @AutoNew
@@ -58,7 +58,7 @@ let newUser = User.new()
 let newUser2 = User.new(name: "Test name")
 ```
 
-Similarly, EnumCaseChecker enhances enums by adding computed properties for each case, allowing for more readable and maintainable code. This is particularly useful in unit testing scenarios where enum states are frequently checked. Example:
+Similarly, `EnumCaseChecker` enhances enums by adding computed properties for each case, allowing for more readable and maintainable code. This is particularly useful in unit testing scenarios where enum states are frequently checked. Example:
 
 ```swift
 @EnumCaseChecker
@@ -76,12 +76,12 @@ These macros aim to streamline Swift development, making code more concise and e
 
 ## Documentation
 
-The latest documentation for CasePaths' APIs is available
+The latest documentation for `AlphaMacroKit` is available
 [here](https://swiftpackageindex.com/Arideno/AlphaMacroKit/main/documentation/alphamacrokit).
 
 ## Feedback
 
-If you happen to encounter any problem or you have any suggestion, please, don't hesitate to open an issue or reach out to me at [andrii.moisol@gmail.com](andrii.moisol@gmail.com).
+If you happen to encounter any problem or you have any suggestion, please, don't hesitate to open an issue or reach out to me at [andrii.moisol@gmail.com](mailto:andrii.moisol@gmail.com).
 This is an open source code project, so feel free to collaborate by raising a pull-request or sharing your feedback.
 
 ## Support Open Source
