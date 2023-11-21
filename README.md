@@ -10,29 +10,39 @@ AlphaMacroKit is crafted to enhance Swift development by providing useful Swift 
 
 - [Requirements](#requirements)
 - [Installation](#installation)
-    - [SPM](#swift-package-manager)
-- [Features](#features)
+  - [SPM](#swift-package-manager)
+- [Usage](#usage)
 - [Documentation](#documentation)
 - [Feedback](#feedback)
 - [Support Open Source](#support-open-source)
 - [License](#license)
 
 ## Requirements
-* iOS 13.0+
-* macOS 10.15+
-* watchOS 6.0+
-* tvOS 13.0+
-* Swift 5.9+
+
+- iOS 13.0+
+- macOS 10.15+
+- watchOS 6.0+
+- tvOS 13.0+
+- Swift 5.9+
 
 ## Installation
 
 ### Swift Package Manager
 
 In Xcode:
-* Click project ⭢ Under projects tab select your project ⭢ Package Dependencies ⭢ Plus icon
-* Use this URL https://github.com/Arideno/AlphaMacroKit
 
-## Features
+- Click project ⭢ Under projects tab select your project ⭢ Package Dependencies ⭢ Plus icon
+- Use this URL https://github.com/Arideno/AlphaMacroKit
+
+In Package.swift:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/Arideno/AlphaMacroKit", from: "0.1.0")
+]
+```
+
+## Usage
 
 The AutoNew macro dramatically simplifies the creation of instances, especially for structs and enums with multiple non-optional properties. It generates a new method, providing default values and reducing boilerplate code. This is useful in unit testing as you usually need to create some stub structs for tests. For example:
 
@@ -65,12 +75,14 @@ print(state.isLoading) // true
 These macros aim to streamline Swift development, making code more concise and expressive, and significantly improving the unit testing experience.
 
 ## Documentation
+
 The latest documentation for CasePaths' APIs is available
 [here](https://swiftpackageindex.com/Arideno/AlphaMacroKit/main/documentation/alphamacrokit).
 
 ## Feedback
+
 If you happen to encounter any problem or you have any suggestion, please, don't hesitate to open an issue or reach out to me at [andrii.moisol@gmail.com](andrii.moisol@gmail.com).
-This is an open source code project, so feel free to collaborate by raising a pull-request or sharing your feedback. 
+This is an open source code project, so feel free to collaborate by raising a pull-request or sharing your feedback.
 
 ## Support Open Source
 
