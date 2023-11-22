@@ -6,7 +6,7 @@
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`AlphaMacroKit` is crafted to enhance Swift development by providing useful Swift macros. For now this library introduces `AutoNew` and `EnumCaseChecker` macros to solve specific challenges in unit testing area.
+`AlphaMacroKit` is made to enhance Swift development by providing useful Swift macros. For now this library introduces `AutoNew` and `EnumCaseChecker` macros to solve specific challenges in unit testing area.
 
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -44,9 +44,17 @@ dependencies: [
 
 ## Usage
 
-The `AutoNew` macro dramatically simplifies the creation of instances, especially for structs and enums with multiple non-optional properties. It generates a new method, providing default values and reducing boilerplate code. This is useful in unit testing as you usually need to create some stub structs for tests. For example:
+The `AutoNew` macro simplifies the creation of instances, especially for structs and enums with multiple non-optional properties. It generates a new method, providing default values and reducing boilerplate code. This is useful in unit testing as you usually need to create some stub structs for tests. For example:
 
 ```swift
+extension UUID {
+    static func new() -> UUID { .init() }
+}
+
+extension String {
+    static func new() -> String { .init() }
+}
+
 @AutoNew
 struct User {
     let id: UUID
@@ -54,8 +62,8 @@ struct User {
     // Other properties
 }
 
-let newUser = User.new()
-let newUser2 = User.new(name: "Test name")
+let newUser = User.new() // User(id: UUID(), name: "")
+let newUser2 = User.new(name: "Test name") // User(id: UUID(), name: "Test name")
 ```
 
 Similarly, `EnumCaseChecker` enhances enums by adding computed properties for each case, allowing for more readable and maintainable code. This is particularly useful in unit testing scenarios where enum states are frequently checked. Example:
